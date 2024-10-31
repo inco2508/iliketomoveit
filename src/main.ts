@@ -63,8 +63,7 @@ export default class ILikeToMoveIt {
             }   
         }
 
-        if (callback) callback(event, this.dragged)
-       
+        if (callback) callback(event, this.dragged)  
     }
     
     private dragEnd(
@@ -81,21 +80,6 @@ export default class ILikeToMoveIt {
         callback: (event: DragEvent, dragged: Element | null) => void
     ) {
         event.preventDefault()
-    
-        if (!event.dataTransfer) return
-    
-        const index = +event.dataTransfer.getData("application/iliketomoveit")
-    
-        const over = event.target
-    
-        if (!(over instanceof Element)) return
-    
-        if (this.isInFirstHalf(over, { x: event.clientX, y: event.clientY })) {
-            over.insertAdjacentElement("beforebegin", this.elements[index])
-            
-        } else {
-            over.insertAdjacentElement("afterend", this.elements[index])
-        }    
 
         if (callback) callback(event, this.dragged)
     }
