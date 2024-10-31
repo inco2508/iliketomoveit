@@ -1,0 +1,15 @@
+{
+  "name": "iliketomoveit",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nicolas ROBERT",
+  "license": "ISC",
+  "description": "dead simple drag and drop",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "type": "module"
+}
