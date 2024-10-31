@@ -2,15 +2,44 @@ export default class ILikeToMoveIt {
     elements: NodeListOf<Element>
     dragged: Element | null = null;
 
-    constructor(elements: NodeListOf<Element>) {
+    public onDragStart(event: DragEvent, dragged: Element | null) {
+        dragged.classList.add("dragged")
+    }
+
+    public onDragOver(event: DragEvent, dragged: Element | null) {
+        
+    }
+
+    public onDragEnd(event: DragEvent, dragged: Element | null) {
+        if (dragged) {
+            dragged.classList.remove("dragged")
+        }
+    }
+
+    public onDrop(event: DragEvent, dragged: Element | null) {
+        
+    }
+
+    constructor(
+        elements: NodeListOf<Element>,
+        onDragStart?: (event: DragEvent, dragged: Element | null) => void,
+        onDragOver?: (event: DragEvent, dragged: Element | null) => void,
+        onDragEnd?: (event: DragEvent, dragged: Element | null) => void,
+        onDrop?: (event: DragEvent, dragged: Element | null) => void,
+    ) {
         this.elements = elements
+
+        this.onDragStart = onDragStart || this.onDragStart;
+        this.onDragOver = onDragOver || this.onDragOver;
+        this.onDragEnd = onDragEnd || this.onDragEnd;
+        this.onDrop = onDrop || this.onDrop;
 
         for (const [index, element] of elements.entries()) {
             if (element instanceof HTMLElement) {
-                element.addEventListener("dragstart", (event) => this.dragStart(event, index))
-                element.addEventListener("dragover", (event) => this.dragOver(event))
-                element.addEventListener("dragend", (event) => this.dragEnd(event))
-                element.addEventListener("drop", (event) => this.drop(event))
+                element.addEventListener("dragstart", (event) => this.dragStart(event, index, this.onDragStart))
+                element.addEventListener("dragover", (event) => this.dragOver(event, this.onDragOver))
+                element.addEventListener("dragend", (event) => this.dragEnd(event, this.onDragEnd))
+                element.addEventListener("drop", (event) => this.drop(event, this.onDrop))
             }
         }
     }
@@ -18,6 +47,7 @@ export default class ILikeToMoveIt {
     private dragStart(
         event: DragEvent, 
         index: number, 
+        callback: (event: DragEvent, dragged: Element | null) => void
     ) {
         if (!event.dataTransfer) return
         if (!(event.target instanceof Element)) return
@@ -26,10 +56,14 @@ export default class ILikeToMoveIt {
         event.dataTransfer.dropEffect = "move"
     
         this.dragged = event.target 
-        this.dragged.classList.add("dragged")
+        
+        callback(event, this.dragged)
     }
     
-    private dragOver(event: DragEvent) {
+    private dragOver(
+        event: DragEvent,
+        callback: (event: DragEvent, dragged: Element | null) => void
+    ) {
         event.preventDefault()
     
         if (!event.dataTransfer) return
@@ -49,17 +83,23 @@ export default class ILikeToMoveIt {
                 this.dragged = over.insertAdjacentElement("afterend", this.dragged)
             }   
         }
+
+        callback(event, this.dragged)
     }
     
-    private dragEnd(event: DragEvent) {
+    private dragEnd(
+        event: DragEvent,
+        callback: (event: DragEvent, dragged: Element | null) => void
+    ) {
         event.preventDefault()
     
-        if (this.dragged) {
-            this.dragged.classList.remove("dragged")
-        }
+        callback(event, this.dragged)
     }
     
-    private drop(event: DragEvent) {
+    private drop(
+        event: DragEvent,
+        callback: (event: DragEvent, dragged: Element | null) => void
+    ) {
         event.preventDefault()
     
         if (!event.dataTransfer) return
@@ -76,6 +116,8 @@ export default class ILikeToMoveIt {
         } else {
             over.insertAdjacentElement("afterend", this.elements[index])
         }    
+
+        callback(event, this.dragged)
     }
     
     private isInFirstHalf(element: Element, mouse: { x: number, y: number }) {

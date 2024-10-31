@@ -51,7 +51,17 @@
 
     <script type="module">
         import ILikeToMoveIt from "../dist/main.js"
-        new ILikeToMoveIt(document.querySelectorAll("[draggable=true]"))
+        new ILikeToMoveIt(
+            document.querySelectorAll("[draggable=true]"),
+            (event, dragged) => {
+                dragged.style.background = "black"
+            },
+            undefined,
+            undefined,
+            (event, dragged) => {
+                dragged.style.background = "purple"
+            },
+        )
     </script> 
 </body>
 </html>
