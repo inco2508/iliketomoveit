@@ -1,45 +1,24 @@
+type Callback = (event: DragEvent, dragged: Element | null) => void
+
 export default class ILikeToMoveIt {
     elements: NodeListOf<Element>
     dragged: Element | null = null;
 
-    public onDragStart(event: DragEvent, dragged: Element | null) {
-        dragged.classList.add("dragged")
-    }
-
-    public onDragOver(event: DragEvent, dragged: Element | null) {
-        
-    }
-
-    public onDragEnd(event: DragEvent, dragged: Element | null) {
-        if (dragged) {
-            dragged.classList.remove("dragged")
-        }
-    }
-
-    public onDrop(event: DragEvent, dragged: Element | null) {
-        
-    }
-
     constructor(
         elements: NodeListOf<Element>,
-        onDragStart?: (event: DragEvent, dragged: Element | null) => void,
-        onDragOver?: (event: DragEvent, dragged: Element | null) => void,
-        onDragEnd?: (event: DragEvent, dragged: Element | null) => void,
-        onDrop?: (event: DragEvent, dragged: Element | null) => void,
+        dragStartCallback?: Callback,
+        dragOverCallback?: Callback,
+        dragEndCallback?: Callback,
+        dropCallback?: Callback,
     ) {
         this.elements = elements
 
-        this.onDragStart = onDragStart || this.onDragStart;
-        this.onDragOver = onDragOver || this.onDragOver;
-        this.onDragEnd = onDragEnd || this.onDragEnd;
-        this.onDrop = onDrop || this.onDrop;
-
         for (const [index, element] of elements.entries()) {
             if (element instanceof HTMLElement) {
-                element.addEventListener("dragstart", (event) => this.dragStart(event, index, this.onDragStart))
-                element.addEventListener("dragover", (event) => this.dragOver(event, this.onDragOver))
-                element.addEventListener("dragend", (event) => this.dragEnd(event, this.onDragEnd))
-                element.addEventListener("drop", (event) => this.drop(event, this.onDrop))
+                element.addEventListener("dragstart", (event) => this.dragStart(event, index, dragStartCallback))
+                element.addEventListener("dragover", (event) => this.dragOver(event, dragOverCallback))
+                element.addEventListener("dragend", (event) => this.dragEnd(event, dragEndCallback))
+                element.addEventListener("drop", (event) => this.drop(event, dropCallback))
             }
         }
     }
@@ -57,7 +36,7 @@ export default class ILikeToMoveIt {
     
         this.dragged = event.target 
         
-        callback(event, this.dragged)
+        if (callback) callback(event, this.dragged)
     }
     
     private dragOver(
@@ -84,7 +63,8 @@ export default class ILikeToMoveIt {
             }   
         }
 
-        callback(event, this.dragged)
+        if (callback) callback(event, this.dragged)
+       
     }
     
     private dragEnd(
@@ -93,7 +73,7 @@ export default class ILikeToMoveIt {
     ) {
         event.preventDefault()
     
-        callback(event, this.dragged)
+        if (callback) callback(event, this.dragged)
     }
     
     private drop(
@@ -117,7 +97,7 @@ export default class ILikeToMoveIt {
             over.insertAdjacentElement("afterend", this.elements[index])
         }    
 
-        callback(event, this.dragged)
+        if (callback) callback(event, this.dragged)
     }
     
     private isInFirstHalf(element: Element, mouse: { x: number, y: number }) {
