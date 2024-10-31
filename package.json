@@ -1,7 +1,11 @@
 {
   "name": "iliketomoveit",
-  "version": "1.0.0",
-  "main": "src/main.ts",
+  "version": "1.0.1",
+  "main": "./lib/main.js",
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
     "build": "npx tsc",
     "dev": "npx tsc --watch"
@@ -10,6 +14,7 @@
   "license": "ISC",
   "description": "dead simple drag and drop",
   "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
     "typescript": "^5.6.3"
   },
   "type": "module"

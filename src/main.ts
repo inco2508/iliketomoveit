@@ -1,4 +1,4 @@
-type Callback = (event: DragEvent, dragged: Element | null) => void
+type Callback = (event: DragEvent, dragged: Element | null) => void 
 
 export default class ILikeToMoveIt {
     elements: NodeListOf<Element>
@@ -26,7 +26,7 @@ export default class ILikeToMoveIt {
     private dragStart(
         event: DragEvent, 
         index: number, 
-        callback: (event: DragEvent, dragged: Element | null) => void
+        callback: Callback | undefined
     ) {
         if (!event.dataTransfer) return
         if (!(event.target instanceof Element)) return
@@ -41,7 +41,7 @@ export default class ILikeToMoveIt {
     
     private dragOver(
         event: DragEvent,
-        callback: (event: DragEvent, dragged: Element | null) => void
+        callback: Callback | undefined
     ) {
         event.preventDefault()
     
@@ -63,12 +63,12 @@ export default class ILikeToMoveIt {
             }   
         }
 
-        if (callback) callback(event, this.dragged)  
+        if (callback) callback(event, this.dragged)
     }
     
     private dragEnd(
         event: DragEvent,
-        callback: (event: DragEvent, dragged: Element | null) => void
+        callback: Callback | undefined
     ) {
         event.preventDefault()
     
@@ -77,7 +77,7 @@ export default class ILikeToMoveIt {
     
     private drop(
         event: DragEvent,
-        callback: (event: DragEvent, dragged: Element | null) => void
+        callback: Callback | undefined
     ) {
         event.preventDefault()
 

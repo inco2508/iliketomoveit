@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "target": "ES2023",
+    "module": "ES2022",
+    "noImplicitAny": true,
+
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "lib",
   }
 }
